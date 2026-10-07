@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+set -eu
+GRADLE_VERSION=9.6.0
+BASE=".gradle-bootstrap"
+DIST="$BASE/gradle-$GRADLE_VERSION-bin.zip"
+HOME_DIR="$BASE/gradle-$GRADLE_VERSION"
+
+if [ ! -x "$HOME_DIR/bin/gradle" ]; then
+  mkdir -p "$BASE"
+  echo "Downloading Gradle $GRADLE_VERSION..."
+  if command -v curl >/dev/null 2>&1; then
+    curl -L "https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip" -o "$DIST"
+  else
+    wget "https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip" -O "$DIST"
+  fi
+  unzip -q -o "$DIST" -d "$BASE"
+fi
+
+exec "$HOME_DIR/bin/gradle" "$@"
